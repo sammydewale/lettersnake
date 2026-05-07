@@ -1,0 +1,24 @@
+name: Build APK
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          pip install buildozer cython==0.29.33
+          sudo apt-get install -y openjdk-17-jdk unzip zip
+      - name: Build APK
+        run: |
+          buildozer android debug
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: lettersnake-apk
+          path: bin/*.apk
